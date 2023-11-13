@@ -222,3 +222,39 @@ deny[msg] {
   input.resource.version != "12.0"
   msg = "SQL Server version should be '12.0'"
 }
+
+deny[msg] {
+  input.resource.type == "azurerm_cosmosdb_account"
+  not input.resource.consistency_policy[*].default_consistency_level == "Session"
+  msg = "Cosmos DB default consistency level should be 'Session'"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_sql_server"
+  input.resource.version != "12.0"
+  msg = "SQL Server version should be '12.0'"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_data_lake_store"
+  not input.resource.firewall_allow_azure_ips == true
+  msg = "Data Lake Store should allow traffic only from Azure services"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_api_management"
+  not input.resource.sku.name == "Consumption"
+  msg = "API Management SKU should be 'Consumption'"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_logic_app_workflow"
+  input.resource.workflow_schema_version != "2016-10-01"
+  msg = "Logic App Workflow Schema Version should be '2016-10-01'"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_network_security_group"
+  not input.resource.security_rule[*].direction == "Inbound"
+  msg = "Network Security Group should have inbound security rules"
+}
