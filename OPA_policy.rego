@@ -258,3 +258,76 @@ deny[msg] {
   not input.resource.security_rule[*].direction == "Inbound"
   msg = "Network Security Group should have inbound security rules"
 }
+
+deny[msg] {
+  input.resource.type == "azurerm_key_vault"
+  not input.resource.enabled_for_disk_encryption == true
+  msg = "Key Vault should be enabled for disk encryption"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_application_gateway"
+  not input.resource.sku[*].name == "WAF_v2"
+  msg = "Application Gateway SKU should be 'WAF_v2'"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_redis_cache"
+  not input.resource.minimum_tls_version == "1.2"
+  msg = "Redis Cache minimum TLS version should be '1.2'"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_virtual_network"
+  not input.resource.enable_ddos_protection == true
+  msg = "Virtual Network should have DDoS protection enabled"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_data_factory"
+  not input.resource.public_network_enabled == true
+  msg = "Data Factory should have public network access enabled"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_hdinsight_hadoop_cluster"
+  not input.resource.version == "4.0"
+  msg = "HDInsight Hadoop Cluster version should be '4.0'"
+}
+
+
+deny[msg] {
+  input.resource.type == "azurerm_storage_account"
+  input.resource.enable_https_traffic_only == false
+  msg = "Storage Account should allow only HTTPS traffic"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_cosmosdb_account"
+  not contains(input.resource.capabilities, "EnableMongo")
+  msg = "Cosmos DB Account should have MongoDB API enabled"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_dns_zone"
+  input.resource.zone_type != "Public"
+  msg = "DNS Zone should be of type 'Public'"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_virtual_machine"
+  input.resource.os_profile[*].admin_username != "admin"
+  msg = "Virtual Machine admin username should be 'admin'"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_application_security_group"
+  count(input.resource.security_rules) < 5
+  msg = "Application Security Group should have at least 5 security rules"
+}
+
+deny[msg] {
+  input.resource.type == "azurerm_sql_server"
+  not input.resource.version == "12.0"
+  msg = "SQL Server version should be '12.0'"
+}
